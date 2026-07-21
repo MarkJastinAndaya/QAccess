@@ -78,14 +78,18 @@
 
     <div class="content-card">
 
+        <form method="GET">
+
         <div class="row mb-4">
 
             <div class="col-md-4">
 
                 <input
                     type="text"
+                    name="search"
                     class="form-control"
-                    placeholder="Search member">
+                    placeholder="Search member..."
+                    value="<?= htmlspecialchars($search) ?>">
 
             </div>
 
@@ -102,6 +106,21 @@
                 </select>
 
             </div>
+
+            <div class="col-md-2">
+
+                <button
+                    class="btn btn-qaccess w-100">
+
+                    Search
+
+                </button>
+
+            </div>
+
+            </div>
+
+            </form>
 
         </div>
 
@@ -173,11 +192,13 @@
 
                 <td>
 
-                <button class="btn btn-sm btn-outline-qaccess">
+                <a
+                href="/QAccess/public/members/show?id=<?= $member['member_id'] ?>"
+                class="btn btn-sm btn-outline-qaccess">
 
                 <i class="bi bi-eye"></i>
 
-                </button>
+                </a>
 
                 <a
                 href="/QAccess/public/members/edit?id=<?= $member['member_id'] ?>"
@@ -187,11 +208,14 @@
 
                 </a>
 
-                <button class="btn btn-sm btn-outline-danger">
+                <a
+                href="/QAccess/public/members/archive?id=<?= $member['member_id'] ?>"
+                class="btn btn-sm btn-outline-danger"
+                onclick="return confirm('Archive this member?')">
 
                 <i class="bi bi-archive"></i>
 
-                </button>
+                </a>
 
                 </td>
 

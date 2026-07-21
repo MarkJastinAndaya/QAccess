@@ -40,10 +40,15 @@ $app->router()->get('/dashboard', [DashboardController::class, 'index']);
 */
 
 $app->router()->get('/members', [MemberController::class, 'index']);
+$app->router()->get('/members/archived', [MemberController::class, 'archived']);
 
 $app->router()->get('/members/create', [MemberController::class, 'create']);
 $app->router()->post('/members/create', [MemberController::class, 'store']);
 
-$app->router()->get('/members/edit', [MemberController::class, 'edit']);
+$app->router()->get('/members/show', [MemberController::class, 'show']);
 
-$app->router()->post('/members/edit',[MemberController::class,'update']);
+$app->router()->get('/members/edit', [MemberController::class, 'edit']);
+$app->router()->post('/members/edit', [MemberController::class, 'update']);
+
+$app->router()->get('/members/archive', [MemberController::class, 'archive']);
+$app->router()->get('/members/restore', [MemberController::class, 'restore']);
