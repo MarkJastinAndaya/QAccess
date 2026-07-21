@@ -10,14 +10,13 @@ class View
     {
         extract($data);
 
-        $file = BASE_PATH . '/resources/views/' . $view . '.php';
+        $content = BASE_PATH . '/resources/views/' . $view . '.php';
 
-        if (!file_exists($file)) {
+        if (!file_exists($content)) {
             http_response_code(500);
-
             exit("View not found: {$view}");
         }
 
-        require $file;
+        require BASE_PATH . '/resources/views/layouts/app.php';
     }
 }

@@ -1,100 +1,360 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Dashboard</title>
+<div class="page">
 
-<style>
+    <div class="topbar">
 
-body{
-    margin:0;
-    font-family:Arial;
-    background:#f5f5f5;
-}
+        <div class="topbar-title">
 
-header{
-    background:#1f2937;
-    color:white;
-    padding:20px;
-}
+            Dashboard
 
-.container{
-    width:1100px;
-    margin:40px auto;
-}
+        </div>
 
-.card{
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
+        <div class="topbar-right">
 
-a{
-    text-decoration:none;
-}
+            <div class="topbar-icon">
 
-.logout{
-    display:inline-block;
-    margin-top:20px;
-}
+                <i class="bi bi-bell"></i>
 
-</style>
+            </div>
 
-</head>
+            <div class="user-box">
 
-<body>
+                <div class="user-avatar">
 
-<header>
+                    <?= strtoupper(substr($username,0,1)) ?>
 
-<h1>QAcess Dashboard</h1>
+                </div>
 
-</header>
+                <div>
 
-<div class="container">
+                    <div class="user-name">
 
-<div class="card">
+                        <?= htmlspecialchars($username) ?>
 
-<h2>
+                    </div>
 
-Welcome,
+                    <small class="text-secondary-qaccess">
 
-<?= htmlspecialchars($username) ?>
+                        Administrator
 
-</h2>
+                    </small>
 
-<p>
+                </div>
 
-Authentication completed successfully.
+            </div>
 
-</p>
+        </div>
 
-<hr>
+    </div>
 
-<h3>System Status</h3>
+    <div class="page-header">
 
-<ul>
+        <div>
 
-<li>✓ Logged In</li>
+            <h1>
 
-<li>✓ Database Connected</li>
+                Good Evening,
+                <?= htmlspecialchars($username) ?>
 
-<li>✓ Session Active</li>
+            </h1>
 
-</ul>
+            <p>
 
-<a
-class="logout"
-href="/QAccess/public/logout">
+                Welcome back to the Quirinians' Student Organization Management Portal.
 
-Logout
+            </p>
 
-</a>
+        </div>
+
+        <div>
+
+            <button class="btn btn-outline-qaccess">
+
+                <i class="bi bi-download"></i>
+
+                Daily Report
+
+            </button>
+
+            <button class="btn btn-qaccess ms-2">
+
+                <i class="bi bi-plus-circle"></i>
+
+                New Entry
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="dashboard-card">
+
+                <h6>Members</h6>
+
+                <h2>145</h2>
+
+                <small>+12 this semester</small>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="dashboard-card">
+
+                <h6>Users</h6>
+
+                <h2>38</h2>
+
+                <small>2 inactive</small>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="dashboard-card">
+
+                <h6>Events</h6>
+
+                <h2>5</h2>
+
+                <small>Upcoming</small>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="dashboard-card">
+
+                <h6>Announcements</h6>
+
+                <h2>8</h2>
+
+                <small>Published</small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="content-card">
+
+                <h4>
+
+                    Recent Activity
+
+                </h4>
+
+                <div class="activity-item">
+
+                    <div class="activity-avatar">
+
+                        <i class="bi bi-person"></i>
+
+                    </div>
+
+                    <div class="activity-content">
+
+                        <h6>
+
+                            Mark Andaya
+
+                        </h6>
+
+                        <p>
+
+                            Approved membership renewal.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="activity-item">
+
+                    <div class="activity-avatar">
+
+                        <i class="bi bi-file-earmark-text"></i>
+
+                    </div>
+
+                    <div class="activity-content">
+
+                        <h6>
+
+                            Antonette
+
+                        </h6>
+
+                        <p>
+
+                            Uploaded QSO Constitution.pdf
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="activity-item">
+
+                    <div class="activity-avatar">
+
+                        <i class="bi bi-calendar-event"></i>
+
+                    </div>
+
+                    <div class="activity-content">
+
+                        <h6>
+
+                            Secretary
+
+                        </h6>
+
+                        <p>
+
+                            Created General Assembly event.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="activity-item">
+
+                    <div class="activity-avatar">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                    </div>
+
+                    <div class="activity-content">
+
+                        <h6>
+
+                            Treasurer
+
+                        </h6>
+
+                        <p>
+
+                            Recorded membership payment.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="content-card">
+
+                <h4>
+
+                    Quick Actions
+
+                </h4>
+
+                <div class="d-grid gap-3">
+
+                    <button class="btn btn-qaccess">
+
+                        <i class="bi bi-person-plus"></i>
+
+                        Add Member
+
+                    </button>
+
+                    <button class="btn btn-outline-qaccess">
+
+                        <i class="bi bi-calendar-plus"></i>
+
+                        Create Event
+
+                    </button>
+
+                    <button class="btn btn-outline-qaccess">
+
+                        <i class="bi bi-upload"></i>
+
+                        Upload Document
+
+                    </button>
+
+                    <button class="btn btn-outline-qaccess">
+
+                        <i class="bi bi-megaphone"></i>
+
+                        Publish Announcement
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="content-card mt-4">
+
+                <h4>
+
+                    Upcoming Events
+
+                </h4>
+
+                <ul class="list-group list-group-flush">
+
+                    <li class="list-group-item">
+
+                        General Assembly
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        Officer Meeting
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        Membership Orientation
+
+                    </li>
+
+                    <li class="list-group-item">
+
+                        Volunteer Activity
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
-
-</div>
-
-</body>
-
-</html>
