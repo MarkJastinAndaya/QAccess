@@ -1,0 +1,177 @@
+// ======================================================
+// QAcess
+// Identity Domain DBML
+// Version 1.1.0
+// Status: Approved
+// Revised: July 2026
+// ======================================================
+
+Enum account_status_type {
+  pending
+  active
+  locked
+  suspended
+  deactivated
+}
+
+Table sexes {
+  sex_id bigint [pk, increment]
+
+  sex_code varchar(30) [not null, unique, note: 'Stable lookup code such as male, female, unknown.']
+  sex_name varchar(100) [not null, note: 'Display label for the sex value.']
+  sort_order int [not null, default: 1]
+  is_active boolean [not null, default: true]
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Note: 'Lookup table for member sex values.'
+}
+
+Table members {
+  member_id bigint [pk, increment]
+  member_uuid uuid [not null, unique, note: 'Public identifier for member records.']
+
+  sex_id bigint [not null]
+
+  first_name varchar(100) [not null]
+  middle_name varchar(100)
+  last_name varchar(100) [not null]
+  suffix varchar(20)
+
+  birth_date date
+
+  primary_email varchar(255)
+  primary_mobile varchar(20)
+  facebook_url varchar(255)
+  current_address text
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (member_uuid) [unique]
+    (last_name, first_name)
+    (sex_id)
+  }
+
+  Note: 'Permanent identity record for a QSO member.'
+}
+
+Table users {
+  user_id bigint [pk, increment]
+  user_uuid uuid [not null, unique, note: 'Public identifier for authentication accounts.']
+
+  member_id bigint [not null, unique, note: 'Each user account belongs to exactly one member.']
+  username varchar(50) [not null, unique]
+  email varchar(255) [not null, unique]
+  password_hash varchar(255) [not null]
+
+  account_status account_status_type [not null, default: 'pending']
+  email_verified boolean [not null, default: false]
+  last_login_at datetime
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (member_id) [unique]
+    (username) [unique]
+    (email) [unique]
+    (user_uuid) [unique]
+  }
+
+  Note: 'Authentication account linked to exactly one member.'
+}
+
+Table roles {
+  role_id bigint [pk, increment]
+
+  role_name varchar(100) [not null, unique]
+  description text
+  is_system boolean [not null, default: false]
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (role_name) [unique]
+  }
+
+  Note: 'Collection of permissions used for authorization.'
+}
+
+Table permissions {
+  permission_id bigint [pk, increment]
+
+  permission_key varchar(150) [not null, unique, note: 'System permission key such as members.view.']
+  display_name varchar(150)
+  description text
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (permission_key) [unique]
+  }
+
+  Note: 'Smallest unit of authorization.'
+}
+
+Table user_roles {
+  user_role_id bigint [pk, increment]
+
+  user_id bigint [not null]
+  role_id bigint [not null]
+  assigned_at datetime [not null, note: 'Timestamp when the role was assigned.']
+
+  indexes {
+    (user_id, role_id) [unique]
+    (user_id)
+    (role_id)
+  }
+
+  Note: 'Many-to-many relationship between users and roles.'
+}
+
+Table role_permissions {
+  role_permission_id bigint [pk, increment]
+
+  role_id bigint [not null]
+  permission_id bigint [not null]
+  assigned_at datetime [not null, note: 'Timestamp when the permission was assigned to the role.']
+
+  indexes {
+    (role_id, permission_id) [unique]
+    (role_id)
+    (permission_id)
+  }
+
+  Note: 'Many-to-many relationship between roles and permissions.'
+}
+
+// ======================================================
+// Relationships
+// ======================================================
+
+Ref: members.sex_id > sexes.sex_id
+
+Ref: users.member_id > members.member_id
+
+Ref: user_roles.user_id > users.user_id
+Ref: user_roles.role_id > roles.role_id
+
+Ref: role_permissions.role_id > roles.role_id
+Ref: role_permissions.permission_id > permissions.permission_id
