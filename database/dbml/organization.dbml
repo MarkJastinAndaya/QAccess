@@ -1,0 +1,258 @@
+// ======================================================
+// QAcess
+// Organization Domain DBML
+// Version 1.0.0
+// Status: Approved
+// Revised: July 2026
+// ======================================================
+
+// External Identity Domain reference:
+// members.member_id is defined in database/dbml/identity.dbml
+
+Enum academic_year_status_type {
+  created
+  preparation
+  active
+  closing
+  archived
+}
+
+Enum membership_status_type {
+  pending
+  active
+  inactive
+  alumni
+  terminated
+}
+
+Enum enrollment_status_type {
+  enrolled
+  not_enrolled
+}
+
+Enum appointment_status_type {
+  active
+  completed
+  resigned
+  removed
+  archived
+}
+
+Table academic_years {
+  academic_year_id bigint [pk, increment]
+  academic_year_uuid uuid [not null, unique, note: 'Public identifier for academic year records.']
+
+  academic_year_code varchar(20) [not null, unique, note: 'Human-readable code such as AY2026-2027.']
+  start_date date [not null]
+  end_date date [not null]
+
+  status academic_year_status_type [not null, default: 'created', note: 'Lifecycle state of the academic year.']
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (academic_year_code) [unique]
+    (status)
+    (start_date)
+    (end_date)
+  }
+
+  Note: 'Represents one operational year of QSO.'
+}
+
+Table institutions {
+  institution_id bigint [pk, increment]
+  institution_uuid uuid [not null, unique, note: 'Public identifier for institution records.']
+
+  institution_code varchar(50) [not null, unique, note: 'Short code such as FEU, TIP, or PUP.']
+  institution_name varchar(255) [not null, unique, note: 'Official school or institution name.']
+  abbreviation varchar(100)
+  city varchar(100)
+  province varchar(100)
+
+  is_active boolean [not null, default: true]
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (institution_code) [unique]
+    (institution_name) [unique]
+    (abbreviation)
+    (is_active)
+  }
+
+  Note: 'Represents an educational institution associated with QSO members.'
+}
+
+Table programs {
+  program_id bigint [pk, increment]
+  program_uuid uuid [not null, unique, note: 'Public identifier for academic program records.']
+
+  institution_id bigint [not null]
+  program_code varchar(50) [not null, note: 'Short code such as BSIT, BSCS, or BSCpE.']
+  program_name varchar(255) [not null, note: 'Full academic program name.']
+
+  is_active boolean [not null, default: true]
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (institution_id, program_code) [unique]
+    (institution_id, program_name) [unique]
+    (program_uuid) [unique]
+    (is_active)
+  }
+
+  Note: 'Represents an academic program within an institution.'
+}
+
+Table education_levels {
+  education_level_id bigint [pk, increment]
+
+  education_level_code varchar(30) [not null, unique, note: 'Stable code such as 1ST_YEAR or 4TH_YEAR.']
+  education_level_name varchar(100) [not null, unique, note: 'Display label such as First Year or Fourth Year.']
+  display_order int [not null, default: 1]
+  is_active boolean [not null, default: true]
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (education_level_code) [unique]
+    (education_level_name) [unique]
+    (display_order)
+    (is_active)
+  }
+
+  Note: 'Lookup table for academic year levels.'
+}
+
+Table membership_terms {
+  membership_term_id bigint [pk, increment]
+  membership_term_uuid uuid [not null, unique, note: 'Public identifier for membership term records.']
+
+  member_id bigint [not null, note: 'References Identity Domain members.member_id when merged.']
+  academic_year_id bigint [not null]
+  institution_id bigint [not null]
+  program_id bigint [not null]
+  education_level_id bigint [not null]
+
+  membership_number varchar(30) [not null, unique, note: 'Yearly membership identifier such as QSO-2026-0012.']
+  membership_status membership_status_type [not null, default: 'pending']
+  enrollment_status enrollment_status_type [not null, default: 'enrolled']
+
+  membership_fee_amount decimal(10,2) [not null, default: 50.00, note: 'Standard membership fee in pesos.']
+  membership_fee_paid boolean [not null, default: false]
+  membership_fee_paid_at date
+
+  joined_at date
+  ended_at date
+  remarks text
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (membership_number) [unique]
+    (member_id, academic_year_id) [unique]
+    (member_id)
+    (academic_year_id)
+    (membership_status)
+    (enrollment_status)
+    (institution_id)
+    (program_id)
+    (education_level_id)
+    (membership_term_uuid) [unique]
+  }
+
+  Note: 'Represents one member's yearly membership record within a specific academic year.'
+}
+
+Table positions {
+  position_id bigint [pk, increment]
+  position_uuid uuid [not null, unique, note: 'Public identifier for organizational position records.']
+
+  position_code varchar(50) [not null, unique, note: 'Short stable code such as PRES, VP, SEC, TREAS, AUD, PRO.']
+  position_name varchar(150) [not null, unique, note: 'Official organizational position name.']
+  description text
+
+  display_order int [not null, default: 1]
+  is_executive_board boolean [not null, default: false]
+  is_adviser boolean [not null, default: false]
+  is_active boolean [not null, default: true]
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (position_code) [unique]
+    (position_name) [unique]
+    (display_order)
+    (is_executive_board)
+    (is_adviser)
+    (is_active)
+  }
+
+  Note: 'Represents official organizational positions within QSO.'
+}
+
+Table appointments {
+  appointment_id bigint [pk, increment]
+  appointment_uuid uuid [not null, unique, note: 'Public identifier for appointment records.']
+
+  membership_term_id bigint [not null]
+  position_id bigint [not null]
+
+  appointment_status appointment_status_type [not null, default: 'active']
+  start_date date [not null]
+  end_date date
+  remarks text
+
+  version int [not null, default: 1, note: 'Optimistic locking version.']
+  deleted_at datetime [note: 'Soft delete marker.']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (membership_term_id, position_id) [unique]
+    (membership_term_id)
+    (position_id)
+    (appointment_status)
+    (appointment_uuid) [unique]
+  }
+
+  Note: 'Represents an appointment of a member to an organizational position for a specific academic term.'
+}
+
+// ======================================================
+// Relationships
+// ======================================================
+
+Ref: programs.institution_id > institutions.institution_id
+
+Ref: membership_terms.academic_year_id > academic_years.academic_year_id
+Ref: membership_terms.institution_id > institutions.institution_id
+Ref: membership_terms.program_id > programs.program_id
+Ref: membership_terms.education_level_id > education_levels.education_level_id
+
+Ref: appointments.membership_term_id > membership_terms.membership_term_id
+Ref: appointments.position_id > positions.position_id
