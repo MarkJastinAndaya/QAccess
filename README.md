@@ -13,7 +13,7 @@ M0 - Repository Initialization ✅
 ## Development Roadmap
 
 - [x] Repository Structure
-- [ ] Identity Domain
+- [x] Identity Domain
 - [ ] Organization Domain
 - [ ] Engagement Domain
 - [ ] Content Domain
